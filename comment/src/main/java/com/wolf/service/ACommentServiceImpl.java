@@ -101,4 +101,39 @@ public class ACommentServiceImpl implements ACommentService{
 		ACommentDAO.updateRecomment(ACommentdto);
 	}
 
+	@Override
+	public void updatecommentNofile(ACommentDTO ACommentdto) {
+		ACommentDAO.updatecommentNofile(ACommentdto);
+	}
+
+	@Override
+	public int getrecommendCount(ACommentDTO ACommentdto) {
+		return ACommentDAO.getrecommendCount(ACommentdto);
+	}
+
+	@Override
+	public void recommendadd(ACommentDTO ACommentdto) {
+		ACommentDAO.recommendadd(ACommentdto);
+	}
+
+	@Override
+	public int checkmyComment(ACommentDTO ACommentdto) {
+		return ACommentDAO.checkmyComment(ACommentdto);
+	}
+
+	@Override
+	public int checkmyReommend(ACommentDTO ACommentdto) {
+		return ACommentDAO.checkmyReommend(ACommentdto);
+	}
+
+	@Override
+	public void recommendremove(ACommentDTO ACommentdto) {
+		ACommentDAO.recommendremove(ACommentdto);
+	}
+
+	@Override
+	public List<ACommentDTO> getDcomments(ACommentPageDTO PageDTO) {
+		return ACommentDAO.getDcomments(PageDTO);
+	}
+
 }

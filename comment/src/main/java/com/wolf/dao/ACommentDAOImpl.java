@@ -63,6 +63,7 @@ public class ACommentDAOImpl implements ACommentDAO{
 	public String deleteComment(int commentNum) {
 		String filename = sqlSession.selectOne(namespace + ".getFilename" , commentNum);
 		sqlSession.delete(namespace + ".deletecomment", commentNum);
+		sqlSession.delete(namespace + ".deleterecommend" , commentNum);
 		return filename;
 	}
 
@@ -79,8 +80,8 @@ public class ACommentDAOImpl implements ACommentDAO{
 
 	@Override
 	public String updateComment(ACommentDTO ACommentdto) {
-		sqlSession.update(namespace + ".updatecomment" , ACommentdto);
 		String filename =  sqlSession.selectOne(namespace + ".getFilename" , ACommentdto);
+		sqlSession.update(namespace + ".updatecomment" , ACommentdto);
 		return filename;
 	}
 
@@ -97,6 +98,41 @@ public class ACommentDAOImpl implements ACommentDAO{
 	@Override
 	public void updateRecomment(ACommentDTO ACommentdto) {
 		sqlSession.update(namespace + ".updaterecomment" , ACommentdto);
+	}
+
+	@Override
+	public void updatecommentNofile(ACommentDTO ACommentdto) {
+		sqlSession.update(namespace + ".updatecommentNofile" , ACommentdto);
+	}
+
+	@Override
+	public int getrecommendCount(ACommentDTO ACommentdto) {
+		return sqlSession.selectOne(namespace + ".getrecommendCount" , ACommentdto);
+	}
+
+	@Override
+	public void recommendadd(ACommentDTO ACommentdto) {
+		sqlSession.insert(namespace + ".recommendAdd" , ACommentdto);
+	}
+
+	@Override
+	public int checkmyComment(ACommentDTO ACommentdto) {
+		return sqlSession.selectOne(namespace + ".checkmyComment", ACommentdto);
+	}
+
+	@Override
+	public int checkmyReommend(ACommentDTO ACommentdto) {
+		return sqlSession.selectOne(namespace + ".checkmyReommend" , ACommentdto);
+	}
+
+	@Override
+	public void recommendremove(ACommentDTO ACommentdto) {
+		sqlSession.delete(namespace + ".recommendRemove", ACommentdto);
+	}
+
+	@Override
+	public List<ACommentDTO> getDcomments(ACommentPageDTO PageDTO) {
+		return sqlSession.selectList(namespace + ".getDcomment" , PageDTO);
 	}
 	
 }

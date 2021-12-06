@@ -12,8 +12,7 @@
 	$(function() {//첫 페이지 로딩시
 		checkcomment();
 		
-		pagebt(1); // 1페이지 눌렀을 때 함수 호출
-		pageCreate(1); // 1번째 칸의 페이지 함수 호출
+		recentlyComment(1);
 		
 		//별점
 		var ystar = 'url("${pageContext.request.contextPath}/resources/images/yellowStar.png")';
@@ -134,29 +133,25 @@
 						url:"commentSerialize", type:"post", data:$("#comment_subform").serialize(), async: false,
 
 						success: function(){},
-						error:function(request,status,error){
-				           	//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-						}
+						error:function(request,status,error){}
 					});
 					
 					$.ajax({
 						url:"upload", type:"post", data:formData, enctype: "multipart/form-data", async: false,
 						processData: false,contentType: false, cache: false, timeout: 300000,
 						success: function(){},
-						error:function(request,status,error){
-						}
+						error:function(request,status,error){}
 					});
 			    }
 			}else{
 				$.ajax({
 					url:"commentSerialize", type:"post", data:$("#comment_subform").serialize(), async: false,
-
 					success: function(){},
-					error:function(request,status,error){
-					}
+					error:function(request,status,error){}
 				});
 			}
 			
+			checkcomment();
  			pagebt(1); 
 			pageCreate(1);
  			$('#commentsub_box').hide();
@@ -168,6 +163,7 @@
 			$('#star4').css("background-image", gstar);
 			$('#star5').css("background-image", gstar);
 			$('#star').val(0);
+			$('#file').val("");
 		}
 	}
 	
@@ -311,8 +307,66 @@
 			}
 		});
 	}
+	
+	function DpageCreate(a){ //추천순 댓글 a칸의 페이지 메소드
+		$.ajax({	//ajax로 전체 댓글의 갯수를 가져온다
+         	url: "commentCount", type: "post", dataType: "text",
+         	success: function(data){ // success - 앞의 ajax 문구가 정상적으로 작동했을 때 실행하는 함수 / data - 가져온 값
+	         	var count = parseInt(data); // count - 가져온 댓글의 갯수를 숫자형로 형변화
+	         	var Pagecount = 0;  //페이지 갯수 0으로 초기값
+	         	
+	         	if(count%3==0){ //댓글의 갯수를 n개로 나누어서 만들어야할 전체 페이지 갯수를 추출
+	         		Pagecount = count/3;
+	         	}else{
+	         		Pagecount = parseInt(count/3 + 1);
+	         	}
+	         		
+				var str = "";
+				var prev = a-1;
+				var next = a+1;
+					
+				if(a>1){ //첫번째 칸만 아니라면 [이전]버튼 생성 
+					str += "<a onclick=DpageCreate(";
+			 		str += prev;
+			 		str += ") href=javascript:;>[이전]  </a>";
+				}
+				
+				if(Pagecount < 5*a){ //n개로 나누었을 때 댓글의 갯수보다 (불러올a칸xn개)가 많으면 댓글의 갯수만큼 제한
+					for (var i = (prev*5)+1 ; i<=Pagecount ; i++ ){
+				 		str += "<a onclick=Dpagebt(";
+				 		str += i;
+				 		str += ") href=javascript:;>"
+				 		str += i;
+				 		str += "  </a>";
+				 		}
+				}else{ //아니라면 n개를 전부 생성
+					for (var i = (prev*5)+1 ; i<=a*5 ; i++ ){
+				 		str += "<a onclick=Dpagebt(";
+				 		str += i;
+				 		str += ") href=javascript:;>"
+				 		str += i;
+				 		str += "  </a>";
+			 		}
+				}
+
+				if(Pagecount > 5*a){ //(불러올a칸xn개)가 댓글의 갯수보다 부족하면 [다음]버튼 생성 
+					str += "<a onclick=DpageCreate(";
+			 		str += next;
+			 		str += ") href=javascript:;>[다음]</a>"
+				}
+				//전체 페이지갯수를 n개로 나누어서 a칸을 호출할 때 어떻게 만들지를 문자열 str에 더해주기
+				
+			 	$("#pageNumber").html(str);
+				//작성한 str을 id가 pageNumber인 div에 넣어준다
+				
+			},
+				error:function(request,status,error){ // success - 값 가져오기 실패시
+              	alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); // 에러창 호출
+			}
+		});
+	}
 		
-	function pagebt(a){ //댓글을 호출하는 메소드
+	function pagebt(a){ //최근날짜순으로 댓글을 호출하는 메소드
 		var page = a;
 		
 		$.ajax({
@@ -321,21 +375,21 @@
          		var str = "";
          		let list = commentData.datas;
          		$(list).each(function(idx,arr){
-         			for(var i = 1 ; i <= arr.star ; i++){
-         				str += "<img class=starpic alt='' src=${pageContext.request.contextPath}/resources/images/yellowStar.png>";
-         			}
-         			for(var i = 1 ; i <= 5-arr.star ; i++){
-         				str += "<img class=starpic alt='' src=${pageContext.request.contextPath}/resources/images/grayStar.png>";
-         			}
+	         			for(var i = 1 ; i <= arr.star ; i++){
+	         				str += "<img class=starpic alt='' src=${pageContext.request.contextPath}/resources/images/yellowStar.png>";
+	         			}
+	         			for(var i = 1 ; i <= 5-arr.star ; i++){
+	         				str += "<img class=starpic alt='' src=${pageContext.request.contextPath}/resources/images/grayStar.png>";
+	         			}
          			str += arr.commentTime;
          			str += "<div>("
          			str += arr.memid;
          			str += ")</div>";
-	       			if(arr.picture != null){
-	       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/images/comment_picture/";
-	         			str += arr.picture;
-	         			str += "'>";
-	       			}
+		       			if(arr.picture != null){
+		       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/images/comment_picture/";
+		         			str += arr.picture;
+		         			str += "'>";
+		       			}
 	       			str += "<div>";
          			str += arr.comment;
          			str += "</div><input id=recountNum";
@@ -344,6 +398,18 @@
          			str += arr.commentNum;		
          			str += ") value=답글"; //답글 버튼 생성
          			str += recommentcount(arr.commentNum);
+         			str += "><input "
+         				if(checkmyRecommend(arr.commentNum)==1){
+             				str += "style=background-color:red"
+             			}else{
+             				str += "style=background-color:white"
+             			}
+         			str += " class=commendcount id=commendcount";
+         			str += arr.commentNum;
+         			str += " type=button onclick=recommendadd(";
+         			str += arr.commentNum;
+         			str += ") value=추천" //추천 버튼 생성
+         			str += recommendcount(arr.commentNum);
          			str += "><div class=recommentbox id=recommentbox";
          			str += arr.commentNum;
          			str += " style=display:none;><div id=recomment"; // recomment숫자 - 답글을 하나하나 달아주는 div공간
@@ -384,6 +450,103 @@
          			str += "<button type=button onclick=Noupdatereform(";
          			str += arr.commentNum;		
          			str += ")>수정 취소</button></form></div><hr>";
+         			
+         		});
+         		
+				$("#comments").html(str);
+				
+			},
+			error:function(request,status,error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
+		});
+	}
+	
+	function Dpagebt(a){ //추천순으로 댓글을 호출하는 메소드
+		var page = a;
+		
+		$.ajax({
+         	url: "DcommentPro", type: "post", dataType:"json", data:{"page":page}, async: false ,
+         	success: function(commentData){
+         		var str = "";
+         		let list = commentData.datas;
+         		$(list).each(function(idx,arr){
+	         			for(var i = 1 ; i <= arr.star ; i++){
+	         				str += "<img class=starpic alt='' src=${pageContext.request.contextPath}/resources/images/yellowStar.png>";
+	         			}
+	         			for(var i = 1 ; i <= 5-arr.star ; i++){
+	         				str += "<img class=starpic alt='' src=${pageContext.request.contextPath}/resources/images/grayStar.png>";
+	         			}
+         			str += arr.commentTime;
+         			str += "<div>("
+         			str += arr.memid;
+         			str += ")</div>";
+		       			if(arr.picture != null){
+		       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/images/comment_picture/";
+		         			str += arr.picture;
+		         			str += "'>";
+		       			}
+	       			str += "<div>";
+         			str += arr.comment;
+         			str += "</div><input id=recountNum";
+         			str += arr.commentNum;
+         			str += " type=button onclick=recommentbt(";
+         			str += arr.commentNum;		
+         			str += ") value=답글"; //답글 버튼 생성
+         			str += recommentcount(arr.commentNum);
+         			str += "><input "
+         				if(checkmyRecommend(arr.commentNum)==1){
+             				str += "style=background-color:red"
+             			}else{
+             				str += "style=background-color:white"
+             			}
+         			str += " class=commendcount id=commendcount";
+         			str += arr.commentNum;
+         			str += " type=button onclick=recommendadd(";
+         			str += arr.commentNum;
+         			str += ") value=추천" //추천 버튼 생성
+         			str += recommendcount(arr.commentNum);
+         			str += "><div class=recommentbox id=recommentbox";
+         			str += arr.commentNum;
+         			str += " style=display:none;><div id=recomment"; // recomment숫자 - 답글을 하나하나 달아주는 div공간
+        			str += arr.commentNum;
+         			str += "></div><div id=RepageNumber"; //RepageNumber숫자 - 답글 하나하나마다 페이징을 달아주는 div
+         			str += arr.commentNum;
+         			str += "></div><form class=recomment_subform id=recomment_subform"; //답글 작성 폼
+         			str += arr.commentNum;
+         			str += "><textarea id=recommentarea"
+         			str += arr.commentNum;
+         			str += " name=comment></textarea>";
+         			str += "<input name=memId type=text value=<%=(String)session.getAttribute("id")%> style=display:none;>";
+         			str += "<input name=recomment type=text value=";
+         			str += arr.commentNum;
+         			str += " style=display:none;>";
+         			str += "<button type=button id=submit_recomment";
+         			str += arr.commentNum;
+         			str += " onclick=insertrecomment(";
+         			str += arr.commentNum;
+         			str += ")>답글 작성</button></form>";
+         			str += "<div class=recomment_comment id=recomment_comment" //자신의 댓글이 나오는 div
+         			str += arr.commentNum;
+         			str += "></div>"; 
+         			str += "<form id=recomment_updateform"; //업데이트 폼
+         			str += arr.commentNum;
+         			str += " style=display:none;>";
+         			str += "<input name=memId type=text value=<%=(String)session.getAttribute("id")%> style=display:none;>";
+         			str += "<input name=recomment type=text value=";
+         			str += arr.commentNum;
+         			str += " style=display:none;><textarea id=urecomment"
+         			str += arr.commentNum;
+         			str += " name=comment></textarea>";
+         			str += "<button type=button id=update_recomment";
+         			str += arr.commentNum;
+         			str += " onclick=updaterecomment(";
+         			str += arr.commentNum;
+         			str += ")>답글 수정</button>";
+         			str += "<button type=button onclick=Noupdatereform(";
+         			str += arr.commentNum;		
+         			str += ")>수정 취소</button></form></div><hr>";
+         			
          		});
          		
 				$("#comments").html(str);
@@ -550,8 +713,7 @@
 				//전체 페이지갯수를 n개로 나누어서 a칸을 호출할 때 어떻게 만들지를 문자열 str에 더해주기
 				
 			 	$("#RepageNumber"+commentnum).html(str);
-				//작성한 str을 id가 pageNumber인 div에 넣어준다
-				
+				//작성한 str을 id가 pageNumber인 div에 넣어준다		
 	}
 	
 	function deletecomment(a){ //댓글 삭제 메소드
@@ -565,6 +727,7 @@
 		pageCreate(1);
 		$('#commentsub_box').show();
 		$('#comment_box').hide();
+		$('#file').val("");
 	}
 	
 	function deleterecomment(a,b){ //답글 삭제 메소드
@@ -585,6 +748,7 @@
 	function updateform(){
 		$('#comment_box').hide();
 		$('#commentupdate_box').show();
+		checkcomment();
 	}
 	
 	function Noupdatecomment(){
@@ -605,6 +769,7 @@
 	
 	function updatecomment(){ //댓글 수정 메소드
 		
+		var gstar = 'url("${pageContext.request.contextPath}/resources/images/grayStar.png")';
 		var fileForm = /(.*?)\.(jpg|jpeg|png)$/;
 		var imgfile = $('#ufile').val();
 		
@@ -621,7 +786,6 @@
 			    }else{
 			    	var form = $("#ucommentPicture_subform")[0];
 					var formData = new FormData(form);
-					
 					$.ajax({
 						url:"ucommentSerialize", type:"post", data:$("#ucomment_subform").serialize(),  dataType: "text" ,  async: false,
 						success: function(data){ filename = data; },
@@ -645,7 +809,7 @@
 			    }
 			}else{
 				$.ajax({
-					url:"ucommentSerialize", type:"post", data:$("#ucomment_subform").serialize(), async: false,
+					url:"updatecommentNofile", type:"post", data:$("#ucomment_subform").serialize(), async: false,
 					success: function(){},
 					error:function(request,status,error){}
 				});
@@ -655,6 +819,13 @@
 			pageCreate(1);
 			checkcomment();
 			Noupdatecomment();
+			$('#ufile').val("");
+			$('#star6').css("background-image", gstar);
+			$('#star7').css("background-image", gstar);
+			$('#star8').css("background-image", gstar);
+			$('#star9').css("background-image", gstar);
+			$('#star10').css("background-image", gstar);
+			$('#ustar').val(0);
 		}
 	}
 	
@@ -674,6 +845,86 @@
 			Noupdatereform(a);
 		
 		}
+	}
+	
+	function recommendcount(a){ //특정 추천갯수 가져오기
+ 		var commentNum = a;
+ 		var count = 0;
+ 		
+		$.ajax({	
+         	url: "recommendCount", type: "post", async: false , dataType: "text", data:{"commentNum":commentNum},
+         	success: function(data){count = data;},
+         	error:function(request,status,error){}
+		});
+		
+		return count;
+	}
+	
+	function recommendadd(a){ //추천 추가하기
+		if(checkmycomment(a)=="1"){
+			alert("자기자신의 댓글에는 추천할 수 없습니다.");
+		}else{
+			var commentNum = a;
+	 		var	id = '<%=(String)session.getAttribute("id")%>';
+	 		
+			if(checkmyRecommend(a)==1){
+				$.ajax({ 
+ 		         	url: "recommendRemove", type: "post", async: false , data:{"id":id , "commentNum":commentNum},
+ 		         	success: function(){},
+ 		         	error:function(request,status,error){}
+ 				});
+				alert("추천을 취소하였습니다.");
+ 				$("#commendcount"+a).css('background-color','white');
+ 			}else{
+ 				$.ajax({ 
+ 		         	url: "recommendAdd", type: "post", async: false , data:{"id":id , "commentNum":commentNum},
+ 		         	success: function(){},
+ 		         	error:function(request,status,error){}
+ 				});
+ 				
+ 				$("#commendcount"+a).css('background-color','red');
+ 			}
+			
+			$('#commendcount'+a).val("추천"+recommendcount(a));
+		}
+	}
+	
+	function checkmycomment(a){ //자기 자신의 댓글인지 확인
+		var commentNum = a;
+ 		var	id = '<%=(String)session.getAttribute("id")%>';
+ 		var check = 0;
+ 		
+		$.ajax({ 
+         	url: "checkmyComment", type: "post", async: false , dataType: "text", data:{"id":id , "commentNum":commentNum},
+         	success: function(data){check = data;},
+         	error:function(request,status,error){}
+		});
+		
+		return check;
+	}
+	
+	function checkmyRecommend(a){ //해당 댓글에 추천을 눌렀는지 확인
+		var commentNum = a;
+ 		var	id = '<%=(String)session.getAttribute("id")%>';
+ 		var check = 0;
+ 		
+		$.ajax({ 
+         	url: "checkmyReommend", type: "post", async: false , dataType: "text", data:{"id":id , "commentNum":commentNum},
+         	success: function(data){check = data;},
+         	error:function(request,status,error){}
+		});
+		
+		return check;
+	}
+	
+	function recentlyComment(a){
+		pagebt(a);
+		pageCreate(a);
+	}
+	
+	function recommendlyComment(a){
+		Dpagebt(a);
+		DpageCreate(a);
 	}
 	
 </script>
@@ -758,6 +1009,9 @@ a{
 	background-color: #FFFFCC;
 }
 
+.commendcount {
+	margin-left: 100px;
+}
 
 </style>
 
@@ -811,7 +1065,7 @@ a{
 </div>
 
 <hr>
-<div id = "commentlist">댓글 목록</div>
+<a href="javascript:;" onclick="recentlyComment(1)">최근 날짜순</a><a href="javascript:;" onclick="recommendlyComment(1)">추천순</a>
 <hr>
 
 <div id = "comments"></div>

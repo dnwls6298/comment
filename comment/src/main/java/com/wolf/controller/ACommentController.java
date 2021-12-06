@@ -38,9 +38,14 @@ public class ACommentController {
 	@RequestMapping(value = "/comment", method = RequestMethod.GET)
 	public String commment(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		session.setAttribute("id","콤찌");
+		session.setAttribute("id","맴버4");
 		
 		return "comment";
+	}
+	
+	@RequestMapping(value = "/goods_view", method = RequestMethod.GET)
+	   public String goods_view() {
+	      return "/goods_view";
 	}
 	
 	@RequestMapping(value="/commentPro")
@@ -52,6 +57,38 @@ public class ACommentController {
 		ACommentPageDTO PageDTO = new ACommentPageDTO();
 		PageDTO.setPage((page-1)*3); PageDTO.setPagesize(3);
 		List<ACommentDTO> ACommentdto = ACommentService.getcomments(PageDTO);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		
+		for(ACommentDTO s : ACommentdto) {
+			data = new HashMap<String, String>();
+			
+			data.put("memid",s.getMemId());
+			data.put("star",Integer.toString(s.getStar()));
+			data.put("comment",s.getComment());
+			data.put("commentNum",Integer.toString(s.getCommentNum()));
+			data.put("commentTime",simpleDateFormat.format(s.getCommentTime()));
+			data.put("picture", s.getPicture());
+			
+			datalist.add(data);
+		}
+
+		
+		Map<String , Object> ACommmentDatas = new HashMap<String, Object>();
+
+		ACommmentDatas.put("datas", datalist);
+		
+        return ACommmentDatas;
+    }
+	
+	@RequestMapping(value="/DcommentPro")
+    @ResponseBody
+    public Map<String,Object> Dcommmentget(@RequestParam Integer page) {		
+		List<Map<String,String>> datalist = new ArrayList<Map<String,String>>();
+		
+		Map<String,String> data = null;
+		ACommentPageDTO PageDTO = new ACommentPageDTO();
+		PageDTO.setPage((page-1)*3); PageDTO.setPagesize(3);
+		List<ACommentDTO> ACommentdto = ACommentService.getDcomments(PageDTO);
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		
 		for(ACommentDTO s : ACommentdto) {
@@ -241,13 +278,13 @@ public class ACommentController {
 		String root_path = request.getSession().getServletContext().getRealPath("/");
 		String attach_path = "resources/images/comment_picture/";
 		
-		File targetFile = new File(root_path + attach_path,filename);
-		if(targetFile.exists()) {
-			targetFile.delete();
-			
-			ACommentService.deleteFile(filename);
+		if(filename!=null&&filename!="") {
+			File targetFile = new File(root_path + attach_path,filename);
+			if(targetFile.exists()) {
+				targetFile.delete();
+				ACommentService.deleteFile(filename);
+			}
 		}
-		
 	}
 	
 	@RequestMapping(value="/uploadupdate", method = RequestMethod.POST , consumes= {"multipart/form-data"})
@@ -268,5 +305,51 @@ public class ACommentController {
 	@RequestMapping(value="/urecommentSerialize")
 	public void urecommentSerialize(ACommentDTO ACommentdto) {
 		ACommentService.updateRecomment(ACommentdto);
+	}
+	
+	@RequestMapping(value="/updatecommentNofile")
+	public void updatecommentNofile(ACommentDTO ACommentdto) {
+		ACommentService.updatecommentNofile(ACommentdto);
+	}
+	
+	
+	@RequestMapping(value="/recommendCount")
+	@ResponseBody
+	public String recommendCount(@RequestParam Integer commentNum) {
+		ACommentDTO ACommentdto = new ACommentDTO();
+		ACommentdto.setCommentNum(commentNum);
+		return Integer.toString(ACommentService.getrecommendCount(ACommentdto));
+	}
+	
+	@RequestMapping(value="/recommendAdd")
+	public void recommendAdd(@RequestParam Integer commentNum , @RequestParam String id) {
+		ACommentDTO ACommentdto = new ACommentDTO();
+		ACommentdto.setCommentNum(commentNum); ACommentdto.setMemId(id);
+		
+		ACommentService.recommendadd(ACommentdto);
+	}
+	
+	@RequestMapping(value="/recommendRemove")
+	public void recommendRemove(@RequestParam Integer commentNum , @RequestParam String id) {
+		ACommentDTO ACommentdto = new ACommentDTO();
+		ACommentdto.setCommentNum(commentNum); ACommentdto.setMemId(id);
+		
+		ACommentService.recommendremove(ACommentdto);
+	}
+	
+	@RequestMapping(value="/checkmyComment")
+	@ResponseBody
+	public String checkmyComment(@RequestParam Integer commentNum , @RequestParam String id) {
+		ACommentDTO ACommentdto = new ACommentDTO();
+		ACommentdto.setCommentNum(commentNum); ACommentdto.setMemId(id);
+		return Integer.toString(ACommentService.checkmyComment(ACommentdto));
+	}
+	
+	@RequestMapping(value="/checkmyReommend")
+	@ResponseBody
+	public String checkmyReommend(@RequestParam Integer commentNum , @RequestParam String id) {
+		ACommentDTO ACommentdto = new ACommentDTO();
+		ACommentdto.setCommentNum(commentNum); ACommentdto.setMemId(id);
+		return Integer.toString(ACommentService.checkmyReommend(ACommentdto));
 	}
 }

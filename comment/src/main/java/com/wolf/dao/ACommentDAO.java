@@ -8,6 +8,8 @@ import com.wolf.domain.ACommentPageDTO;
 public interface ACommentDAO {
 	public List<ACommentDTO> getcomments(ACommentPageDTO PageDTO);
 	
+	public List<ACommentDTO> getDcomments(ACommentPageDTO PageDTO);
+	
 	public int getcommentCount();
 	
 	public void insertcomment(ACommentDTO ACommentdto);
@@ -35,4 +37,16 @@ public interface ACommentDAO {
 	public void updateFilename(String picture);
 	
 	public void updateRecomment(ACommentDTO ACommentdto);
+	
+	public void updatecommentNofile(ACommentDTO ACommentdto);
+	
+	public int getrecommendCount(ACommentDTO ACommentdto);
+	
+	public void recommendadd(ACommentDTO ACommentdto);
+	
+	public int checkmyComment(ACommentDTO ACommentdto);
+	
+	public int checkmyReommend(ACommentDTO ACommentdto);
+	
+	public void recommendremove(ACommentDTO ACommentdto);
 }
