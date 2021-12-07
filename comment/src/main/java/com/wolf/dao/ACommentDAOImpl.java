@@ -24,8 +24,8 @@ public class ACommentDAOImpl implements ACommentDAO{
 	}
 
 	@Override
-	public int getcommentCount() {
-		return sqlSession.selectOne(namespace + ".getcommentCount");
+	public int getcommentCount(int goodsNo) {
+		return sqlSession.selectOne(namespace + ".getcommentCount" , goodsNo);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +12,6 @@
 
 	$(function() {//첫 페이지 로딩시
 		checkcomment();
-		
 		recentlyComment(1);
 		
 		//별점
@@ -167,14 +167,16 @@
 		}
 	}
 	
+	
 	function checkcomment(){ //댓글 확인 여부 메소드 겸 댓글 호출 메소드
 		var	id = '<%=(String)session.getAttribute("id")%>';
+		var goodsNo = ${param.goodsNo};
 		
 		if(id == "null"){
  			$('#commentsub_box').hide(); //id가 없으면 입력창 숨기기
  		}else{
 			$.ajax({
-				url:"checkcomment" , type:"post" , dataType:"json", data:{"memid":id} ,
+				url:"checkcomment" , type:"post" , dataType:"json", data:{"memid":id , "goodsNo":goodsNo} ,
 				success: function(commentData){
 					var str = "";
 	         		let list = commentData.datas;
@@ -251,11 +253,14 @@
 	
 	
 	function pageCreate(a){ //댓글 a칸의 페이지 메소드
+		var goodsNo = ${param.goodsNo};
 		$.ajax({	//ajax로 전체 댓글의 갯수를 가져온다
-         	url: "commentCount", type: "post", dataType: "text",
+         	url: "commentCount", type: "post", dataType: "text", data:{"goodsNo":goodsNo} ,
          	success: function(data){ // success - 앞의 ajax 문구가 정상적으로 작동했을 때 실행하는 함수 / data - 가져온 값
 	         	var count = parseInt(data); // count - 가져온 댓글의 갯수를 숫자형로 형변화
-	         	var Pagecount = 0;  //페이지 갯수 0으로 초기값
+	         	var Pagecount = 0;  //페이지 갯수 0으로 초기화
+	         	
+	         	$(".crema-product-reviews-count").text("(" + count + ")");
 	         	
 	         	if(count%3==0){ //댓글의 갯수를 n개로 나누어서 만들어야할 전체 페이지 갯수를 추출
 	         		Pagecount = count/3;
@@ -361,20 +366,21 @@
 				
 			},
 				error:function(request,status,error){ // success - 값 가져오기 실패시
-              	alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); // 에러창 호출
+              	//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); 에러창 호출
 			}
 		});
 	}
 		
 	function pagebt(a){ //최근날짜순으로 댓글을 호출하는 메소드
 		var page = a;
-		
+		var goodsNo = ${param.goodsNo};
 		$.ajax({
-         	url: "commentPro", type: "post", dataType:"json", data:{"page":page}, async: false ,
+         	url: "commentPro", type: "post", dataType:"json", data:{"page":page , "goodsNo":goodsNo}, async: false ,
          	success: function(commentData){
          		var str = "";
          		let list = commentData.datas;
          		$(list).each(function(idx,arr){
+         			str += "<div class=onecomment>";
 	         			for(var i = 1 ; i <= arr.star ; i++){
 	         				str += "<img class=starpic alt='' src=${pageContext.request.contextPath}/resources/images/yellowStar.png>";
 	         			}
@@ -449,28 +455,27 @@
          			str += ")>답글 수정</button>";
          			str += "<button type=button onclick=Noupdatereform(";
          			str += arr.commentNum;		
-         			str += ")>수정 취소</button></form></div><hr>";
+         			str += ")>수정 취소</button></form></div></div>";
          			
          		});
          		
 				$("#comments").html(str);
 				
 			},
-			error:function(request,status,error){
-				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
+			error:function(request,status,error){}
 		});
 	}
 	
 	function Dpagebt(a){ //추천순으로 댓글을 호출하는 메소드
 		var page = a;
-		
+		var goodsNo = ${param.goodsNo};
 		$.ajax({
-         	url: "DcommentPro", type: "post", dataType:"json", data:{"page":page}, async: false ,
+         	url: "DcommentPro", type: "post", dataType:"json", data:{"page":page , "goodsNo":goodsNo}, async: false ,
          	success: function(commentData){
          		var str = "";
          		let list = commentData.datas;
          		$(list).each(function(idx,arr){
+         			str += "<div class=onecomment>";
 	         			for(var i = 1 ; i <= arr.star ; i++){
 	         				str += "<img class=starpic alt='' src=${pageContext.request.contextPath}/resources/images/yellowStar.png>";
 	         			}
@@ -545,16 +550,14 @@
          			str += ")>답글 수정</button>";
          			str += "<button type=button onclick=Noupdatereform(";
          			str += arr.commentNum;		
-         			str += ")>수정 취소</button></form></div><hr>";
+         			str += ")>수정 취소</button></form></div></div>";
          			
          		});
          		
 				$("#comments").html(str);
 				
 			},
-			error:function(request,status,error){
-				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
+			error:function(request,status,error){}
 		});
 	}
 	
@@ -599,9 +602,7 @@
 				}
 				
 			},
-				error:function(request,status,error){
-				//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
+				error:function(request,status,error){}
 		});
 		
 		$.ajax({
@@ -723,8 +724,7 @@
          	error:function(request,status,error){}
 		});
 	
-		pagebt(1); 
-		pageCreate(1);
+		recentlyComment(1);
 		$('#commentsub_box').show();
 		$('#comment_box').hide();
 		$('#file').val("");
@@ -815,8 +815,7 @@
 				});
 			}
 			
-			pagebt(1); 
-			pageCreate(1);
+			recentlyComment(1);
 			checkcomment();
 			Noupdatecomment();
 			$('#ufile').val("");
@@ -874,7 +873,7 @@
  		         	error:function(request,status,error){}
  				});
 				alert("추천을 취소하였습니다.");
- 				$("#commendcount"+a).css('background-color','white');
+ 				$("#commendcount"+a).css('background-color','white'); // 추천 취소시 하얗게
  			}else{
  				$.ajax({ 
  		         	url: "recommendAdd", type: "post", async: false , data:{"id":id , "commentNum":commentNum},
@@ -882,7 +881,7 @@
  		         	error:function(request,status,error){}
  				});
  				
- 				$("#commendcount"+a).css('background-color','red');
+ 				$("#commendcount"+a).css('background-color','red'); // 추천 입력될시 빨갛게
  			}
 			
 			$('#commendcount'+a).val("추천"+recommendcount(a));
@@ -929,10 +928,21 @@
 	
 </script>
 <style type="text/css">
+
+#allsubcommentbox{
+	background-color: #DDDDDD;
+	padding: 10px;
+	padding-left:30px;
+}
+
 textarea {
     width: 25em;
     height: 6em;
     resize: none;
+}
+
+.onecomment{
+	margin-bottom: 20px;
 }
 
 .recommentbox{
@@ -973,13 +983,13 @@ a{
 	margin-left: 10px;
 }
 
-#comment_box > .starpic{
+.starpic{
 	width: 30px;
 	height: 30px;
 	margin: 2px; 
 }
 
-#comment_box > .commentpic{
+.commentpic{
 	width: 400px;
 	height: 300px;
 }
@@ -987,18 +997,6 @@ a{
 #commentlist{
 	size: 8em;
 	background-color: gray;
-}
-
-#commentsub_box{
-	background-color: #FFFFCC;
-}
-
-#commentupdate_box{
-	background-color: #FFFFCC;
-}
-
-#comment_box{
-	background-color: #FFFFCC;
 }
 
 .recommentbox .recomment_comment {
@@ -1018,50 +1016,54 @@ a{
 </head>
 <body>
 
-<div id = commentsub_box>
-	<div id = starbox>
-		별점:<button class="star" id="star1"></button>
-		<button class="star" id="star2"></button>
-		<button class="star" id="star3"></button>
-		<button class="star" id="star4"></button>
-		<button class="star" id="star5"></button>
+<%-- 가져올 상품의 번호 : ${param.goodsNo} <br> --%>
+
+<div id="allsubcommentbox">
+	<div id = commentsub_box>
+		<div id = starbox>
+			별점:<button class="star" id="star1"></button>
+			<button class="star" id="star2"></button>
+			<button class="star" id="star3"></button>
+			<button class="star" id="star4"></button>
+			<button class="star" id="star5"></button>
+		</div>
+		
+		<form id="comment_subform">
+			<input id="star" name="star" type="text" value="0" style="display:none;"><br>
+			<input id="memId" name="memId" type="text" value="<%=(String)session.getAttribute("id")%>" style="display:none;">
+			<input id="goodsNo" name="goodsNo" type="text" value="${param.goodsNo}" style="display:none;">
+			<textarea id="comment" name="comment"></textarea>
+			<button type="button" id="submit_comment" onclick="insertcomment()">댓글 작성</button>
+		</form>
+		
+		<form id="commentPicture_subform" enctype="multipart/form-data">
+			리뷰사진 첨부 : <input type="file" id="file" name="file" accept=".jpg, .png">
+		</form>
 	</div>
 	
-	<form id="comment_subform">
-		<input id="star" name="star" type="text" value="0" style="display:none;"><br>
-		<input id="memId" name="memId" type="text" value="<%=(String)session.getAttribute("id")%>" style="display:none;">
-		<textarea id="comment" name="comment"></textarea>
-		<button type="button" id="submit_comment" onclick="insertcomment()">댓글 작성</button>
-	</form>
+	<div id = comment_box></div>
 	
-	<form id="commentPicture_subform" enctype="multipart/form-data">
-		리뷰사진 첨부:<input type="file" id="file" name="file" accept=".jpg, .png">
-	</form>
-</div>
-
-<div id = comment_box></div>
-
-<div id = commentupdate_box style="display:none">
-	<div id = ustarbox>
-		별점:<button class="star" id="star6"></button>
-		<button class="star" id="star7"></button>
-		<button class="star" id="star8"></button>
-		<button class="star" id="star9"></button>
-		<button class="star" id="star10"></button>
+	<div id = commentupdate_box style="display:none">
+		<div id = ustarbox>
+			별점:<button class="star" id="star6"></button>
+			<button class="star" id="star7"></button>
+			<button class="star" id="star8"></button>
+			<button class="star" id="star9"></button>
+			<button class="star" id="star10"></button>
+		</div>
+		
+		<form id="ucomment_subform">
+			<input id="ustar" name="star" type="text" value="0" style="display:none;"><br>
+			<input id="ucommentNum" name="commentNum" type="text" style="display:none;">
+			<textarea id="ucomment" name="comment"></textarea>
+			<span id="updatebutton"><button type="button" id="usubmit_comment" onclick="updatecomment()">댓글 수정</button>
+			<button type="button" id="nousubmit_comment" onclick="Noupdatecomment()">수정 취소</button></span>
+		</form>
+		
+		<form id="ucommentPicture_subform" enctype="multipart/form-data">
+			리뷰사진 첨부:<input type="file" id="ufile" name="ufile" accept=".jpg, .png">
+		</form>
 	</div>
-	
-	<form id="ucomment_subform">
-		<input id="ustar" name="star" type="text" value="0" style="display:none;"><br>
-		<input id="ucommentNum" name="commentNum" type="text" style="display:none;">
-		<textarea id="ucomment" name="comment"></textarea>
-		<span id="updatebutton"><button type="button" id="usubmit_comment" onclick="updatecomment()">댓글 수정</button>
-		<button type="button" id="nousubmit_comment" onclick="Noupdatecomment()">수정 취소</button></span>
-	</form>
-	
-	<form id="ucommentPicture_subform" enctype="multipart/form-data">
-		리뷰사진 첨부:<input type="file" id="ufile" name="ufile" accept=".jpg, .png">
-	</form>
-	
 </div>
 
 <hr>

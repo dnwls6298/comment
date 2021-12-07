@@ -6,21 +6,21 @@
 <mapper namespace="com.team.mapper.ACommentMapper">
 	
 	<select id="getcomment" resultType="com.wolf.domain.ACommentDTO">
-		select * from comment where recomment is null order by commentNum desc limit #{page} , #{pagesize}
+		select * from comment where recomment is null and goodsNo = #{goodsNo} order by commentNum desc limit #{page} , #{pagesize}
 	</select>
 	
 	<select id="getDcomment" resultType="com.wolf.domain.ACommentDTO">
 		select a.memId , a.star , a.recomment , a.comment , a.commentNum , a.commentTime , a.picture ,  b.count from comment a left outer join 
 		(select recommendCommentNum, count(recommendCommentNum) count from recommend group by recommendCommentNum) b 
-		on a.commentNum = b.recommendCommentNum where recomment is null order by b.count desc , a.commentNum desc limit #{page} , #{pagesize}
+		on a.commentNum = b.recommendCommentNum where recomment is null and goodsNo = #{goodsNo} order by b.count desc , a.commentNum desc limit #{page} , #{pagesize}
 	</select>
 	
 	<select id="getcommentCount" resultType="_int">
-		select count(comment) from comment where recomment is null
+		select count(comment) from comment where recomment is null and goodsNo = #{goodsNo}
 	</select>
 	
 	<insert id="insertcomment">
-		insert into comment(memId , star,comment,commentNum,commentTime) values(#{memId} ,#{star} ,#{comment} ,(select IFNULL(MAX(commentNum),0)+1 from comment C) , #{commentTime})
+		insert into comment(memId , star,comment,commentNum,commentTime , goodsNo ) values(#{memId} ,#{star} ,#{comment} ,(select IFNULL(MAX(commentNum),0)+1 from comment C) , #{commentTime} , #{goodsNo})
 	</insert>
 	
 	<select id="getrecomment" resultType="com.wolf.domain.ACommentDTO">
@@ -40,7 +40,7 @@
 	</update>
 
 	<select id="checkcomment" resultType="com.wolf.domain.ACommentDTO">
-		select * from comment where recomment is null and memId = #{memId}
+		select * from comment where recomment is null and memId = #{memId} and goodsNo = #{goodsNo}
 	</select>
 	
 	<select id="getFilename" resultType="String">

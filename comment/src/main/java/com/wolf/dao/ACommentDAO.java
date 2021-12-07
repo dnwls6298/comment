@@ -10,7 +10,7 @@ public interface ACommentDAO {
 	
 	public List<ACommentDTO> getDcomments(ACommentPageDTO PageDTO);
 	
-	public int getcommentCount();
+	public int getcommentCount(int goodsNo);
 	
 	public void insertcomment(ACommentDTO ACommentdto);
 	

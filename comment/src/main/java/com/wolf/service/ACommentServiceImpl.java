@@ -23,8 +23,8 @@ public class ACommentServiceImpl implements ACommentService{
 	}
 
 	@Override
-	public int getcommentCount() {
-		return ACommentDAO.getcommentCount();
+	public int getcommentCount(int goodsNo) {
+		return ACommentDAO.getcommentCount(goodsNo);
 	}
 
 	@Override

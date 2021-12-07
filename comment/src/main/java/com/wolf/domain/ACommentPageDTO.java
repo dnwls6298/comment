@@ -4,6 +4,7 @@ public class ACommentPageDTO {
 	private int page;
 	private int pagesize;
 	private int commentNum;
+	private int goodsNo;
 	
 	public int getPage() {
 		return page;
@@ -22,5 +23,11 @@ public class ACommentPageDTO {
 	}
 	public void setCommentNum(int commentNum) {
 		this.commentNum = commentNum;
+	}
+	public int getGoodsNo() {
+		return goodsNo;
+	}
+	public void setGoodsNo(int goodsNo) {
+		this.goodsNo = goodsNo;
 	}
 }

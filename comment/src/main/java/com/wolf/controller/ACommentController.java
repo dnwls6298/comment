@@ -37,25 +37,31 @@ public class ACommentController {
 	
 	@RequestMapping(value = "/comment", method = RequestMethod.GET)
 	public String commment(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		session.setAttribute("id","맴버4");
 		
 		return "comment";
 	}
 	
 	@RequestMapping(value = "/goods_view", method = RequestMethod.GET)
-	   public String goods_view() {
-	      return "/goods_view";
+	public String goods_view(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("id","맴버3");
+		
+		return "/goods_view";
 	}
 	
 	@RequestMapping(value="/commentPro")
     @ResponseBody
-    public Map<String,Object> commmentget(@RequestParam Integer page) {		
+    public Map<String,Object> commmentget(@RequestParam Integer page , @RequestParam Integer goodsNo) {		
 		List<Map<String,String>> datalist = new ArrayList<Map<String,String>>();
 		
 		Map<String,String> data = null;
 		ACommentPageDTO PageDTO = new ACommentPageDTO();
-		PageDTO.setPage((page-1)*3); PageDTO.setPagesize(3);
+		
+		PageDTO.setPage((page-1)*3); 
+		PageDTO.setPagesize(3); 
+		PageDTO.setGoodsNo(goodsNo);
+		
 		List<ACommentDTO> ACommentdto = ACommentService.getcomments(PageDTO);
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		
@@ -82,12 +88,12 @@ public class ACommentController {
 	
 	@RequestMapping(value="/DcommentPro")
     @ResponseBody
-    public Map<String,Object> Dcommmentget(@RequestParam Integer page) {		
+    public Map<String,Object> Dcommmentget(@RequestParam Integer page , @RequestParam Integer goodsNo) {		
 		List<Map<String,String>> datalist = new ArrayList<Map<String,String>>();
 		
 		Map<String,String> data = null;
 		ACommentPageDTO PageDTO = new ACommentPageDTO();
-		PageDTO.setPage((page-1)*3); PageDTO.setPagesize(3);
+		PageDTO.setPage((page-1)*3); PageDTO.setPagesize(3); PageDTO.setGoodsNo(goodsNo);
 		List<ACommentDTO> ACommentdto = ACommentService.getDcomments(PageDTO);
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		
@@ -114,8 +120,8 @@ public class ACommentController {
 	
 	@RequestMapping(value="/commentCount")
 	@ResponseBody
-	public String commentcount() {
-		return Integer.toString(ACommentService.getcommentCount());
+	public String commentcount(@RequestParam Integer goodsNo) {
+		return Integer.toString(ACommentService.getcommentCount(goodsNo));
 	}
 	
 	@RequestMapping(value="/commentSerialize")
@@ -183,12 +189,12 @@ public class ACommentController {
 	
 	@RequestMapping(value="/checkcomment")
 	@ResponseBody
-    public Map<String,Object> checkcomment(@RequestParam String memid) {		
+    public Map<String,Object> checkcomment(@RequestParam String memid , @RequestParam Integer goodsNo) {		
 		List<Map<String,String>> datalist = new ArrayList<Map<String,String>>();
 		
 		Map<String,String> data = null;
 		ACommentDTO acommentdto = new ACommentDTO();
-		acommentdto.setMemId(memid);
+		acommentdto.setMemId(memid); acommentdto.setGoodsNo(goodsNo);
 		
 		List<ACommentDTO> ACommentdto = ACommentService.checkcomment(acommentdto);
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");

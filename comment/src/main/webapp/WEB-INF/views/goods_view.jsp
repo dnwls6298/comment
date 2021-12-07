@@ -744,8 +744,13 @@
 					<div class="reviews_con">
 						
 					</div><!-- reviews_con -->
-					</div><!--reviews-->
+					</div>
 					
+					<div class="comment innerContent">
+						<c:import url="comment.jsp">
+							<c:param name="goodsNo" value="1"></c:param> <%-- ${goodsView.goodsNo} --%>
+						</c:import>
+					</div>
 					
 				</div><!-- detail-contents -->
 			</div><!-- item_goods_sec -->
@@ -1126,11 +1131,6 @@ var swiper = new Swiper(".proRecommend", {
 	},
 });
 </script>
-
-
-
-
-
 
 
 </html>

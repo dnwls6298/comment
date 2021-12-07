@@ -10,6 +10,7 @@ public class ACommentDTO {
 	private int recomment;
 	private Timestamp commentTime;
 	private String picture;
+	private int goodsNo;
 
 	public String getComment() {
 		return comment;
@@ -65,5 +66,13 @@ public class ACommentDTO {
 
 	public void setCommentTime(Timestamp commentTime) {
 		this.commentTime = commentTime;
+	}
+
+	public int getGoodsNo() {
+		return goodsNo;
+	}
+
+	public void setGoodsNo(int goodsNo) {
+		this.goodsNo = goodsNo;
 	}
 }
