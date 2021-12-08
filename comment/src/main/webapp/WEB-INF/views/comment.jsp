@@ -200,7 +200,7 @@
 			       			str += arr.commentNum;
 			       			str += ")>삭제</button><button onclick=updateform()>수정</button></span></div>";
 			       			if(arr.picture != null){
-			       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/images/comment_picture/";
+			       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/comment_picture/";
 			         			str += arr.picture;
 			         			str += "''>";
 			       			}
@@ -314,8 +314,9 @@
 	}
 	
 	function DpageCreate(a){ //추천순 댓글 a칸의 페이지 메소드
+		var goodsNo = ${param.goodsNo};
 		$.ajax({	//ajax로 전체 댓글의 갯수를 가져온다
-         	url: "commentCount", type: "post", dataType: "text",
+         	url: "commentCount", type: "post", dataType: "text", data:{"goodsNo":goodsNo},
          	success: function(data){ // success - 앞의 ajax 문구가 정상적으로 작동했을 때 실행하는 함수 / data - 가져온 값
 	         	var count = parseInt(data); // count - 가져온 댓글의 갯수를 숫자형로 형변화
 	         	var Pagecount = 0;  //페이지 갯수 0으로 초기값
@@ -392,7 +393,7 @@
          			str += arr.memid;
          			str += ")</div>";
 		       			if(arr.picture != null){
-		       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/images/comment_picture/";
+		       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/comment_picture/";
 		         			str += arr.picture;
 		         			str += "'>";
 		       			}
@@ -487,7 +488,7 @@
          			str += arr.memid;
          			str += ")</div>";
 		       			if(arr.picture != null){
-		       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/images/comment_picture/";
+		       				str += "<img class=commentpic alt='' src='${pageContext.request.contextPath}/resources/comment_picture/";
 		         			str += arr.picture;
 		         			str += "'>";
 		       			}
@@ -872,7 +873,7 @@
  		         	success: function(){},
  		         	error:function(request,status,error){}
  				});
-				alert("추천을 취소하였습니다.");
+				
  				$("#commendcount"+a).css('background-color','white'); // 추천 취소시 하얗게
  			}else{
  				$.ajax({ 

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,20 +31,11 @@ public class ACommentController {
 	@Inject
 	private ACommentService ACommentService;
 	
-	@Resource(name = "uploadPath")
-	private String uploadPath;
-	
-	@RequestMapping(value = "/comment", method = RequestMethod.GET)
-	public String commment(HttpServletRequest request) {
-		
-		return "comment";
-	}
-	
 	@RequestMapping(value = "/goods_view", method = RequestMethod.GET)
 	public String goods_view(HttpServletRequest request) {
 		
 		HttpSession session = request.getSession();
-		session.setAttribute("id","맴버3");
+		session.setAttribute("id","user1");
 		
 		return "/goods_view";
 	}
@@ -176,7 +166,7 @@ public class ACommentController {
 		String fileName = uid.toString()+"_"+file.getOriginalFilename();
 		
 		String root_path = request.getSession().getServletContext().getRealPath("/");
-		String attach_path = "resources/images/comment_picture/";
+		String attach_path = "resources/comment_picture/";
 		
 		File targetFile = new File(root_path + attach_path,fileName);
 		FileCopyUtils.copy(file.getBytes(),targetFile);
@@ -225,7 +215,7 @@ public class ACommentController {
 		String fileName = ACommentService.deleteComment(commentnum);
 		
 		String root_path = request.getSession().getServletContext().getRealPath("/");
-		String attach_path = "resources/images/comment_picture/";
+		String attach_path = "resources/comment_picture/";
 		
 		File targetFile = new File(root_path + attach_path,fileName);
 		if(targetFile.exists()) {
@@ -282,7 +272,7 @@ public class ACommentController {
 	@RequestMapping(value="/deletefile")
 	public void deletefile(@RequestParam String filename , HttpServletRequest request) {
 		String root_path = request.getSession().getServletContext().getRealPath("/");
-		String attach_path = "resources/images/comment_picture/";
+		String attach_path = "resources/comment_picture/";
 		
 		if(filename!=null&&filename!="") {
 			File targetFile = new File(root_path + attach_path,filename);
@@ -300,7 +290,7 @@ public class ACommentController {
 		String fileName = uid.toString()+"_"+ufile.getOriginalFilename();
 		
 		String root_path = request.getSession().getServletContext().getRealPath("/");
-		String attach_path = "resources/images/comment_picture/";
+		String attach_path = "resources/comment_picture/";
 		
 		File targetFile = new File(root_path + attach_path,fileName);
 		FileCopyUtils.copy(ufile.getBytes(),targetFile);

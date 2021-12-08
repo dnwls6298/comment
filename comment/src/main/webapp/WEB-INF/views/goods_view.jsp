@@ -3,6 +3,7 @@
 <%@ include file="include/header.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="org.apache.taglibs.standard.tag.common.xml.ForEachTag"%>
+
 		<div id="container">
 			<div class="goods innerContent">
 				<div class="location">
@@ -239,7 +240,7 @@
 									<button type="button" class="buy_wish" onclick="" name="buyBtn">찜</button>
 									<div class="btn">
 										<span><button type="button" class="btnSSG btnLineG" onclick="" name="buyBtn">장바구니</button></span>
-										<span><button type="button" class="btnSSG action" onclick=";" name="buyBtn">구매하기</button></span>
+										<span><button type="button" class="btnSSG action" name="buyBtn">구매하기</button></span>
 									</div>
 								</div><!-- btnCart  -->
 								<div class="prd-info-2">
@@ -1064,7 +1065,7 @@
 					
 </body>
 <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
-
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
 $(document).ready(function() {
 	$(".icon_detail_sns").click(function() {
@@ -1079,8 +1080,15 @@ $(document).ready(function() {
 	});	
 	$(".popup-close").click(function() {
 		$(".layer-popup1").removeClass('active');	
-	});		
-}
+	});	
+	
+	$("button[name='buyBtn']").click(function(){
+ 		var goodsCount = $("#topQuantitySpinner").val();
+ 		var goodsNum = 1; // ${goodsView.goodsNo}
+
+ 		$(location).attr("href", "order?goodsCount=" + goodsCount + "&goodsNum=" + goodsNum );
+	});
+});
 </script>
 <script>
 	var swiper = new Swiper(".thumbSwipe", {
@@ -1131,6 +1139,8 @@ var swiper = new Swiper(".proRecommend", {
 	},
 });
 </script>
+
+
 
 
 </html>
