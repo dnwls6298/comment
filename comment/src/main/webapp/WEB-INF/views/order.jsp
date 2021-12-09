@@ -10,6 +10,12 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 	<script type="text/javascript">
+	
+	$(function() {
+		var Pricedot = ${ListDTO.goodsPrice} * ${goodsCount};
+	     
+		$("#sumprice").html("가격 : " + Pricedot + "원");
+	});
 	   
 	   function sample4_execDaumPostcode() {
 	        new daum.Postcode({
@@ -76,36 +82,116 @@
 		   $('#input_infomation').show();
 	   }
 	   
+	   function submitOrder(){
+		   if($("#basic_infomation").css("display") == "none"){
+			   
+			   var orderAddr = $("#sample4_roadAddress").val() + $("#sample4_extraAddress").val() + " " + $("#sample4_detailAddress").val();
+			   var goodNum = ${goodsNum};
+			   var goodsCount = ${goodsCount};
+			   var Pricedot = ${ListDTO.goodsPrice} * ${goodsCount};
+			   
+				alert("입력 주소지 배송");
+				
+				$.ajax({
+					url:"insertOrder" , async: false , type:"post", data:{
+						"memId":'<%=(String)session.getAttribute("id")%>',
+						"goodsNum":goodNum,
+						"goodsCount":goodsCount,
+						"orderAddr":orderAddr,
+						"orderSub":$("#orderemail").val(),
+						"orderZipcode":$("#sample4_postcode").val(),
+						"orderPhone":$("#orderPhone").val(),
+						"amount":Pricedot,
+						"resipient":$("#resipient").val()
+					},
+					success: function(){},
+					error:function(request,status,error){
+						
+					}
+				});
+				
+			}else if($("#input_infomation").css("display") == "none"){
+				
+				var orderAddr = "${AMemberDTO.address}" + " " + "${AMemberDTO.addressSub}" + " " + "${AMemberDTO.addressReference}";
+				var goodNum = ${goodsNum};
+				var goodsCount = ${goodsCount};
+				var Pricedot = ${ListDTO.goodsPrice} * ${goodsCount};
+				var orderSub = "${AMemberDTO.email}";
+				var orderZipcode = ${AMemberDTO.zipcode};
+				var orderPhone = "${AMemberDTO.phone}";
+				var resipient = "${AMemberDTO.memNm}";
+					
+				alert("기본 주소지 배송");
+				
+				$.ajax({
+					url:"insertOrder" , async: false , type:"post", data:{
+						"memId":'<%=(String)session.getAttribute("id")%>',
+						"goodsNum":goodNum,
+						"goodsCount":goodsCount,
+						"orderAddr":orderAddr,
+						"orderSub":orderSub,
+						"orderZipcode":orderZipcode,
+						"orderPhone":orderPhone,
+						"amount":Pricedot,
+						"resipient":resipient
+					},
+					success: function(){},
+					error:function(request,status,error){
+						
+					}
+				});
+		   }
+		   
+	   }
+	   
 	</script>
 	
-
 </head>
 <body>
 
-<div id="product list">대충 상품 내용</div>
+<div id="product list"><h1>상품 내용</h1></div><br><br>
+
+<table id="productlist" border="1">
+	<tr><td><img alt="미리보기 이미지 없음" src="${ListDTO.imagePath}">${ListDTO.goodsNm}</td><td style="font-size: 2em;">${goodsCount}개</td></tr>
+</table>
+
 <br><br><br>
 
-<div id="sumprice">대충 가격 합산</div>
+<div id="sumprice"></div>
 <br><br><br>
 
 <a href="javascript:;" onclick="openbasic()">기본 내용</a> / <a href="javascript:;" onclick="openinput()">직접 입력</a>
 <br><br><br>
 
+<h1>배송 정보</h1><br>
+
+
 <div id=basic_infomation>
-맴버 테이블의 값을 가져올 공간
+	수취인 : ${AMemberDTO.memNm}<br>
+	이메일 : ${AMemberDTO.email}<br>
+	전화번호 : ${AMemberDTO.phone}<br>
+	우편번호 : ${AMemberDTO.zipcode}<br>
+	주소 : ${AMemberDTO.address}<br>
+	참고항목 : ${AMemberDTO.addressSub}<br>
+	상세주소 : ${AMemberDTO.addressReference}<br>
 </div>
+
+
 <div id=input_infomation style="display:none;">
 	<form id=sub_myinfo>
-		수취인 : <input type="text" id="memId" name="memId"><br>
-		이메일 : <input type="text" id="orderSub" name="orderSub"><br>
+		수취인 : <input type="text" id="resipient" name="resipient"><br>
+		이메일 : <input type="text" id="orderemail" name="orderemail"><br>
+		전화번호 : <input type="number" id="orderPhone" name="orderPhone"><br>
 		우편번호 : <input type="text" id="sample4_postcode" placeholder="우편번호" name="zipcode" readonly>
 		<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
 		주소 : <input type="text" id="sample4_roadAddress" placeholder="도로명주소" name="address1" readonly><br>
 		<input type="hidden" id="sample4_jibunAddress" placeholder="지번주소">
-		참고항목 : <input type="text" id="sample4_extraAddress" placeholder="참고항목" name="address2" readonly><br>
 		상세주소 : <input type="text" id="sample4_detailAddress" placeholder="상세주소" name="address3"><br>
+		참고항목 : <input type="text" id="sample4_extraAddress" placeholder="참고항목" name="address2" readonly><br>
 	</form>
 </div>
+
+<button type="button" onclick="submitOrder()">결제하기</button>
 
 </body>
 </html>
