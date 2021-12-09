@@ -25,7 +25,7 @@ public class AOrderController {
 	private AOrdersService AOrdersService;
 	
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
-	public String commment(@RequestParam Integer goodsNum , @RequestParam Integer goodsCount , Model model , HttpSession session){
+	public String Vieworder(@RequestParam Integer goodsNum , @RequestParam Integer goodsCount , Model model , HttpSession session){
 		
 		ListDTO Listdto = AOrdersService.getProductinfo(goodsNum);
 		
@@ -74,5 +74,22 @@ public class AOrderController {
 			AOrdersdto.setOrderDate(date);
 			
 			AOrdersService.insertOrder(AOrdersdto);
+	}
+	
+	@RequestMapping(value = "/orders", method = RequestMethod.GET)
+	public String Vieworders(@RequestParam Integer goodsNum , @RequestParam Integer goodsCount , Model model , HttpSession session){
+		
+		ListDTO Listdto = AOrdersService.getProductinfo(goodsNum);
+		
+		model.addAttribute("ListDTO" , Listdto);
+		model.addAttribute("goodsCount", goodsCount);
+		model.addAttribute("goodsNum", goodsNum);
+		
+		String memId = (String)session.getAttribute("id");
+		AMemberDTO AMemberdto = AOrdersService.getMemberinfo(memId);
+		
+		model.addAttribute("AMemberDTO" , AMemberdto);
+	
+		return "/orders";
 	}
 }

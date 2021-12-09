@@ -186,8 +186,8 @@
 		<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
 		주소 : <input type="text" id="sample4_roadAddress" placeholder="도로명주소" name="address1" readonly><br>
 		<input type="hidden" id="sample4_jibunAddress" placeholder="지번주소">
-		상세주소 : <input type="text" id="sample4_detailAddress" placeholder="상세주소" name="address3"><br>
-		참고항목 : <input type="text" id="sample4_extraAddress" placeholder="참고항목" name="address2" readonly><br>
+		참고항목 : <input type="text" id="sample4_extraAddress" placeholder="상세주소" name="address2" readonly><br>
+		상세주소 : <input type="text" id="sample4_detailAddress" placeholder="참고주소" name="address3"><br>
 	</form>
 </div>
 

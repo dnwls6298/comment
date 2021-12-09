@@ -1086,7 +1086,7 @@ $(document).ready(function() {
  		var goodsCount = $("#topQuantitySpinner").val();
  		var goodsNum = 1; // ${goodsView.goodsNo}
 
- 		$(location).attr("href", "order?goodsCount=" + goodsCount + "&goodsNum=" + goodsNum );
+ 		$(location).attr("href", "orders?goodsCount=" + goodsCount + "&goodsNum=" + goodsNum );
 	});
 });
 </script>
