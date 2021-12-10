@@ -20,15 +20,36 @@
 	<script type="text/javascript">
 	
 	$(function() {
-		var price = ${ListDTO.goodsPrice};
-		var sumprice = ${ListDTO.goodsPrice} * ${goodsCount};
+		var price = commaCheck(${ListDTO.goodsPrice});
+		var sumprice = commaCheck(${ListDTO.goodsPrice} * ${goodsCount});
 	     
 		$("#item_prc0").html(price);
 		$("#item_amt0").html(price);
 		$("#total_pmt_amt").html(sumprice);
 		$("#right_product_amt").html(sumprice);
 		$("#right_total_ord_amt").html(sumprice);
+		
+		var phone = hyphenCheck(${AMemberDTO.phone});
+		$("#phone_num").html(phone);
+		
 	});
+	
+	function commaCheck(value){ //숫자를 천단위로 콤마를 찍는 메소드
+		return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+	function hyphenCheck(value){
+		return value.toString().replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,"$1-$2-$3");
+	}
+
+			
+	
+	function checkNull(input){ //입력 공백 여부 또는 스페이스바로 공백입력 여부 확인 메소드
+		if(input== null||input.replace(/ /gi,"")==""){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	   
 	function sample4_execDaumPostcode() {
         new daum.Postcode({
@@ -105,8 +126,6 @@
 			   var Pricedot = ${ListDTO.goodsPrice} * ${goodsCount};
 			   var Phone = $("#genrlCltTelno0").val() + $("#genrlTxnoTelno0").val() + $("#genrlDtlTelno0").val();
 			   
-				alert("입력 주소지 배송");
-				
 				$.ajax({
 					url:"insertOrder" , async: false , type:"post", data:{
 						"memId":'<%=(String)session.getAttribute("id")%>',
@@ -135,8 +154,6 @@
 				var orderZipcode = ${AMemberDTO.zipcode};
 				var orderPhone = "${AMemberDTO.phone}";
 				var resipient = "${AMemberDTO.memNm}";
-					
-				alert("기본 주소지 배송");
 				
 				$.ajax({
 					url:"insertOrder" , async: false , type:"post", data:{
@@ -278,9 +295,71 @@
 </form>
 
 <!-- 배송지 입력 시작 -->
-<div id=basic_infomation style="display: none;"></div>
+<a href="javascript:;" onclick="openbasic()">기본 내용</a> / <a href="javascript:;" onclick="openinput()">직접 입력</a>
+<div id=basic_infomation>
+		<table class="tbl_list4 deli_info" summary="주문하시는 분, 영문성명, 주민등록번호, 이메일주소, 배송지 선택, 받으시는분, 배송지주소, 전화번호, 휴대폰번호, 남기실 말씀 항목을 입력할 수 있는 배송정보 입력폼">
+		<caption>배송정보 입력폼</caption>
+		<colgroup>
+			<col width="130">
+			<col width="*">
+		</colgroup>
+		<tbody>
+        
+                <tr class="last">
+            
+					<th scope="row" class="vtop"><em><label id="">수취인<sup class="require-icon">*</sup></label></em></th>
+					
+		    		
+					<td class="pdb8">
+						<div>
+							${AMemberDTO.memNm}<br>
+						</div>
+					</td>
+		    		
+		    	</tr>
 
-<div id=input_infomation>	
+				<tr class="bdrB2">
+					<th scope="row" class="tit_deli2 al"><em><label for="use_email">이메일주소</label></em></th>
+					<td>
+						<div>
+							${AMemberDTO.email}
+						</div>
+					</td>
+				</tr>
+			
+
+		<tr class="last">
+			<th scope="row" rowspan="2" valign="top"><em><label for="s_postCode_0">배송지주소<sup class="require-icon">*</sup></label></em></th>
+			<td>
+				<div>
+					<label for="zipCode1_0" class="hide">우편번호 첫번째 3자리</label>
+						${AMemberDTO.zipcode}
+				</div>
+			</td>
+		</tr>
+		<tr class="last">
+			<td>
+            <div id="div_roadNmbaseAddr0">
+				${AMemberDTO.address} ${AMemberDTO.addressSub} ${AMemberDTO.addressReference}
+			</div>
+				
+			</td>
+		</tr>
+
+			<tr class="last">
+		
+				<th scope="row"><em><label for="use_sphone">연락처<sup class="require-icon">*</sup></label></em></th>
+			
+			<td>
+				<div id="phone_num">
+				</div>
+			</td>
+		</tr>
+	</tbody></table>
+
+</div>
+
+<div id=input_infomation style="display: none;">	
 	<table class="tbl_list4 deli_info" summary="주문하시는 분, 영문성명, 주민등록번호, 이메일주소, 배송지 선택, 받으시는분, 배송지주소, 전화번호, 휴대폰번호, 남기실 말씀 항목을 입력할 수 있는 배송정보 입력폼">
 		<caption>배송정보 입력폼</caption>
 		<colgroup>

@@ -46,16 +46,6 @@ public class AOrderController {
 			@RequestParam String memId ,@RequestParam String goodsNum ,@RequestParam String goodsCount ,
 			@RequestParam String orderAddr ,@RequestParam String orderSub ,@RequestParam String orderZipcode ,
 			@RequestParam String orderPhone ,@RequestParam Integer amount,@RequestParam String resipient) {
-		
-			System.out.println(memId);
-			System.out.println(goodsNum);
-			System.out.println(goodsCount);
-			System.out.println(orderAddr);
-			System.out.println(orderSub);
-			System.out.println(orderZipcode);
-			System.out.println(orderPhone);
-			System.out.println(amount);
-			System.out.println(resipient);
 			
 			AOrdersDTO AOrdersdto = new AOrdersDTO();
 			AOrdersdto.setMemId(memId);

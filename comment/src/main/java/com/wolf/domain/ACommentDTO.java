@@ -11,6 +11,7 @@ public class ACommentDTO {
 	private Timestamp commentTime;
 	private String picture;
 	private int goodsNo;
+	private int count;
 
 	public String getComment() {
 		return comment;
@@ -74,5 +75,13 @@ public class ACommentDTO {
 
 	public void setGoodsNo(int goodsNo) {
 		this.goodsNo = goodsNo;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 }
