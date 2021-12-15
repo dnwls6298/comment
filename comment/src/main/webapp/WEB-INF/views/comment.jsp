@@ -255,7 +255,7 @@
 	function pageCreate(a){ //댓글 a칸의 페이지 메소드
 		var goodsNo = ${param.goodsNo};
 		$.ajax({	//ajax로 전체 댓글의 갯수를 가져온다
-         	url: "commentCount", type: "post", dataType: "text", data:{"goodsNo":goodsNo} ,
+         	url: "commentCount", type: "post", dataType: "text", data:{"goodsNo":goodsNo} , async: false,
          	success: function(data){ // success - 앞의 ajax 문구가 정상적으로 작동했을 때 실행하는 함수 / data - 가져온 값
 	         	var count = parseInt(data); // count - 가져온 댓글의 갯수를 숫자형로 형변화
 	         	var Pagecount = 0;  //페이지 갯수 0으로 초기화
@@ -280,7 +280,9 @@
 				
 				if(Pagecount < 5*a){ //n개로 나누었을 때 댓글의 갯수보다 (불러올a칸xn개)가 많으면 댓글의 갯수만큼 제한
 					for (var i = (prev*5)+1 ; i<=Pagecount ; i++ ){
-				 		str += "<a onclick=pagebt(";
+						str += "<a id=pageid";
+						str += i;
+						str += " onclick=pagebt(";
 				 		str += i;
 				 		str += ") href=javascript:;>"
 				 		str += i;
@@ -288,7 +290,9 @@
 				 		}
 				}else{ //아니라면 n개를 전부 생성
 					for (var i = (prev*5)+1 ; i<=a*5 ; i++ ){
-				 		str += "<a onclick=pagebt(";
+						str += "<a id=pageid";
+						str += i;
+						str += " onclick=pagebt(";
 				 		str += i;
 				 		str += ") href=javascript:;>"
 				 		str += i;
@@ -316,7 +320,7 @@
 	function DpageCreate(a){ //추천순 댓글 a칸의 페이지 메소드
 		var goodsNo = ${param.goodsNo};
 		$.ajax({	//ajax로 전체 댓글의 갯수를 가져온다
-         	url: "commentCount", type: "post", dataType: "text", data:{"goodsNo":goodsNo},
+         	url: "commentCount", type: "post", dataType: "text", data:{"goodsNo":goodsNo}, async: false,
          	success: function(data){ // success - 앞의 ajax 문구가 정상적으로 작동했을 때 실행하는 함수 / data - 가져온 값
 	         	var count = parseInt(data); // count - 가져온 댓글의 갯수를 숫자형로 형변화
 	         	var Pagecount = 0;  //페이지 갯수 0으로 초기값
@@ -339,7 +343,9 @@
 				
 				if(Pagecount < 5*a){ //n개로 나누었을 때 댓글의 갯수보다 (불러올a칸xn개)가 많으면 댓글의 갯수만큼 제한
 					for (var i = (prev*5)+1 ; i<=Pagecount ; i++ ){
-				 		str += "<a onclick=Dpagebt(";
+						str += "<a id=Dpageid";
+						str += i;
+						str += " onclick=Dpagebt(";
 				 		str += i;
 				 		str += ") href=javascript:;>"
 				 		str += i;
@@ -347,7 +353,9 @@
 				 		}
 				}else{ //아니라면 n개를 전부 생성
 					for (var i = (prev*5)+1 ; i<=a*5 ; i++ ){
-				 		str += "<a onclick=Dpagebt(";
+						str += "<a id=Dpageid";
+						str += i;
+						str += " onclick=Dpagebt(";
 				 		str += i;
 				 		str += ") href=javascript:;>"
 				 		str += i;
@@ -375,6 +383,8 @@
 	function pagebt(a){ //최근날짜순으로 댓글을 호출하는 메소드
 		var page = a;
 		var goodsNo = ${param.goodsNo};
+		
+		$("#pageid"+a).css('color','#FF6600');
 		$.ajax({
          	url: "commentPro", type: "post", dataType:"json", data:{"page":page , "goodsNo":goodsNo}, async: false ,
          	success: function(commentData){
@@ -407,9 +417,9 @@
          			str += recommentcount(arr.commentNum);
          			str += "><input "
          				if(checkmyRecommend(arr.commentNum)==1){
-             				str += "style=background-color:red"
+             				str += "style=color:red"
              			}else{
-             				str += "style=background-color:white"
+             				str += "style=color:black"
              			}
          			str += " class=commendcount id=commendcount";
          			str += arr.commentNum;
@@ -470,6 +480,9 @@
 	function Dpagebt(a){ //추천순으로 댓글을 호출하는 메소드
 		var page = a;
 		var goodsNo = ${param.goodsNo};
+		
+		$("#Dpageid"+a).css('color','#FF6600');
+		
 		$.ajax({
          	url: "DcommentPro", type: "post", dataType:"json", data:{"page":page , "goodsNo":goodsNo}, async: false ,
          	success: function(commentData){
@@ -502,9 +515,9 @@
          			str += recommentcount(arr.commentNum);
          			str += "><input "
          				if(checkmyRecommend(arr.commentNum)==1){
-             				str += "style=background-color:red"
+             				str += "style=color:red"
              			}else{
-             				str += "style=background-color:white"
+             				str += "style=color:black"
              			}
          			str += " class=commendcount id=commendcount";
          			str += arr.commentNum;
@@ -874,7 +887,7 @@
  		         	error:function(request,status,error){}
  				});
 				
- 				$("#commendcount"+a).css('background-color','white'); // 추천 취소시 하얗게
+ 				$("#commendcount"+a).css('color','black');
  			}else{
  				$.ajax({ 
  		         	url: "recommendAdd", type: "post", async: false , data:{"id":id , "commentNum":commentNum},
@@ -882,7 +895,7 @@
  		         	error:function(request,status,error){}
  				});
  				
- 				$("#commendcount"+a).css('background-color','red'); // 추천 입력될시 빨갛게
+ 				$("#commendcount"+a).css('color','red'); // 추천 입력될시 빨갛게
  			}
 			
 			$('#commendcount'+a).val("추천"+recommendcount(a));
@@ -918,13 +931,13 @@
 	}
 	
 	function recentlyComment(a){
-		pagebt(a);
 		pageCreate(a);
+		pagebt(a);
 	}
 	
 	function recommendlyComment(a){
-		Dpagebt(a);
 		DpageCreate(a);
+		Dpagebt(a);
 	}
 	
 </script>
@@ -943,7 +956,30 @@ textarea {
 }
 
 .onecomment{
-	margin-bottom: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid;
+}
+
+#pageNumber{
+	border-bottom: 4px solid;
+	font-size: 1.5em;
+	padding-left: 20px;
+}
+
+.Sortcomment{
+	border-radius: 30px;
+    padding: 11px 23px;
+    border: solid 3px #FF6600;
+    font-size: 1em;
+    font-weight: 800;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#Sortbox{
+	margin-left: 20px;
+	margin-top: 35px;
+	margin-bottom: 25px;
 }
 
 .recommentbox{
@@ -1012,6 +1048,8 @@ a{
 	margin-left: 100px;
 }
 
+
+
 </style>
 
 </head>
@@ -1019,7 +1057,11 @@ a{
 
 <%-- 가져올 상품의 번호 : ${param.goodsNo} <br> --%>
 
+
 <div id="allsubcommentbox">
+	
+
+
 	<div id = commentsub_box>
 		<div id = starbox>
 			별점:<button class="star" id="star1"></button>
@@ -1068,7 +1110,10 @@ a{
 </div>
 
 <hr>
-<a href="javascript:;" onclick="recentlyComment(1)">최근 날짜순</a><a href="javascript:;" onclick="recommendlyComment(1)">추천순</a>
+<div id="Sortbox"> 
+<a class="Sortcomment" href="javascript:;" onclick="recentlyComment(1)">최근 날짜순</a>
+<a class="Sortcomment" href="javascript:;" onclick="recommendlyComment(1)">추천순</a>
+</div>
 <hr>
 
 <div id = "comments"></div>

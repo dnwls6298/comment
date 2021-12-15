@@ -930,8 +930,6 @@
 									<p>첫방문 이신가요?</p>
 									<b>B2B배송대행 도매사이트</b>
 								</div>
-								<a href="" class="goinfo">쇼핑몰안내 바로가기</a>
-							</div>
 							<div class="right_menu">
 								<div class="menu_border border_50" alt="">
 									<a href="#">마이페이지</a>

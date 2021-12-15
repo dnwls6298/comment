@@ -62,8 +62,8 @@ public class ACommentDAOImpl implements ACommentDAO{
 	@Override
 	public String deleteComment(int commentNum) {
 		String filename = sqlSession.selectOne(namespace + ".getFilename" , commentNum);
-		sqlSession.delete(namespace + ".deletecomment", commentNum);
 		sqlSession.delete(namespace + ".deleterecommend" , commentNum);
+		sqlSession.delete(namespace + ".deletecomment", commentNum);
 		return filename;
 	}
 

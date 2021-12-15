@@ -174,6 +174,8 @@
 				});
 		   }
 		   
+		   $(location).attr("href", "main");
+		   
 	   }
 	   
 	</script>

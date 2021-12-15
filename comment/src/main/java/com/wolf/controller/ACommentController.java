@@ -35,7 +35,7 @@ public class ACommentController {
 	public String goods_view(HttpServletRequest request) {
 		
 		HttpSession session = request.getSession();
-		session.setAttribute("id","user1");
+		session.setAttribute("id","zzazza1");
 		
 		return "/goods_view";
 	}
@@ -166,7 +166,7 @@ public class ACommentController {
 		String fileName = uid.toString()+"_"+file.getOriginalFilename();
 		
 		String root_path = request.getSession().getServletContext().getRealPath("/");
-		String attach_path = "resources/comment_picture/";
+		String attach_path = "resources/images/";
 		
 		File targetFile = new File(root_path + attach_path,fileName);
 		FileCopyUtils.copy(file.getBytes(),targetFile);
@@ -215,7 +215,7 @@ public class ACommentController {
 		String fileName = ACommentService.deleteComment(commentnum);
 		
 		String root_path = request.getSession().getServletContext().getRealPath("/");
-		String attach_path = "resources/comment_picture/";
+		String attach_path = "resources/images/";
 		
 		File targetFile = new File(root_path + attach_path,fileName);
 		if(targetFile.exists()) {
@@ -272,7 +272,7 @@ public class ACommentController {
 	@RequestMapping(value="/deletefile")
 	public void deletefile(@RequestParam String filename , HttpServletRequest request) {
 		String root_path = request.getSession().getServletContext().getRealPath("/");
-		String attach_path = "resources/comment_picture/";
+		String attach_path = "resources/images/";
 		
 		if(filename!=null&&filename!="") {
 			File targetFile = new File(root_path + attach_path,filename);
@@ -290,7 +290,7 @@ public class ACommentController {
 		String fileName = uid.toString()+"_"+ufile.getOriginalFilename();
 		
 		String root_path = request.getSession().getServletContext().getRealPath("/");
-		String attach_path = "resources/comment_picture/";
+		String attach_path = "resources/images/";
 		
 		File targetFile = new File(root_path + attach_path,fileName);
 		FileCopyUtils.copy(ufile.getBytes(),targetFile);
